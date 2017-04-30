@@ -8,7 +8,7 @@ var Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     var factor = Math.floor(Math.random() * 3) + 1;
-    Element.call(this,0, factor * 60 + (factor - 1) * 20) ;
+    Element.call(this,factor * 30, factor * 60 + (factor - 1) * 20) ;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -21,11 +21,13 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x = dt * 100 + this.x;
+
     if(Math.floor(this.x) > 500){
         this.x = 0;
         var factor = Math.floor(Math.random() * 3) + 1;
         this.y = factor * 60 + (factor - 1) * 20;
     }
+
 };
 
 // Draw the enemy on the screen, required method for game
@@ -44,18 +46,47 @@ var Player = function() {
     //initial position to this element
     Element.call(this,101 * 2,5 * 83);
 };
+
 Player.prototype.update = function() {
-
-
+    if (this.y < 0){
+        this.reset();
+    }
 };
+
+Player.prototype.reset = function(){
+    this.x = 101 * 2;
+    this.y = 5 * 83;
+};
+
 // Draw the Player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 Player.prototype.handleInput = function(keyPressed){
-    console.log(keyPressed);
+    var adding = 101;
+    switch(keyPressed) {
+        case 'left':
+        if (this.x > 0 ){
+            this.x = this.x - adding;
+        }
+        break;
+        case 'up':
+        this.y = this.y - adding;
+        break;
+        case 'right':
+        if (this.x < 404){
+            this.x = this.x + adding;
+        }
+        break;
+        case 'down':
+        if (this.y < 415){
+            this.y = this.y + adding;
+        }
+        break;
+    }
 };
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
