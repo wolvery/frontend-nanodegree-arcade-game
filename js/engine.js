@@ -116,7 +116,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+
         player.update();
+
     }
 
     /* This function initially draws the selection of player to be used in the game.
@@ -184,6 +186,10 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
+        //Draw any rock
+        allRocks.forEach(function(rock) {
+            rock.render();
+        });
 
         renderEntities();
 
@@ -229,7 +235,8 @@ var Engine = (function(global) {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
-        'images/Selector.png'
+        'images/Selector.png',
+        'images/Rock.png'
     ]);
     Resources.onReady(init);
 

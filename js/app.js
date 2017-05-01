@@ -16,17 +16,27 @@ var Game = function() {
     this.selectorX = 0;
     this.selectorY = 4 * 83;
 };
+/*Render to the selector*/
 Game.prototype.selectorRender = function() {
     ctx.drawImage(Resources.get('images/Selector.png'), this.selectorX, this.selectorY);
 };
+/*
+ *This function change the enviroment of the game by each level reached.
+ */
 Game.prototype.update = function() {
     this.level += 1;
     if (this.level > 0) {
         if (allEnemies.length < 6) {
             allEnemies.push(new Enemy());
         }
+        //change enviroment to this level
+        // add some rocks
+        if (this.level > 3 && allRocks.length < 6) {
+            allRocks.push(new Rock(Math.floor(Math.random() * 3) + 1, (Math.floor(Math.random() * 4) + 1) + 0.5));
+        }
+        // random level give some heart
     }
-    //change enviroment to this level
+
 };
 Game.prototype.selection = function(keyPressed) {
     switch (keyPressed) {
@@ -91,11 +101,24 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    // to move
+    //check if there is a rock before moving
+    var myPos = this.getExtremePoints();
+    var rockPresence = false;
+    var factor = Math.floor(Math.random() * 3);
+    myPos.X1 = dt * 100 * this.speed + myPos.X1;
+    myPos.X2 = dt * 100 * this.speed + myPos.X2;
+    allRocks.forEach(function(rock) {
+        rockPresence = rockPresence || rock.checkRockPos(myPos);
+    });
+    if(rockPresence){
+        //change Y
+        this.y = Math.floor((factor + 0.5) * this.incrementY);
+    }
     this.x = dt * 100 * this.speed + this.x;
 
     if (Math.floor(this.x) > 500) {
         this.x = 0;
-        var factor = Math.floor(Math.random() * 3);
         this.y = Math.floor((factor + 0.5) * this.incrementY);
     }
 };
@@ -110,6 +133,26 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+var Rock = function(factorX, factorY) {
+    Element.call(this, factorX, factorY, 'images/Rock.png');
+};
+
+Rock.prototype = Object.create(Element.prototype);
+Rock.prototype.constructor = Rock;
+
+Rock.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+Rock.prototype.checkRockPos = function checkCollisions(elementPos) {
+    var rockPos = this.getExtremePoints();
+    if ((elementPos.X1 < rockPos.X2) && (elementPos.X2 > rockPos.X1) &&
+        (elementPos.Y1 < rockPos.Y2) && (elementPos.Y2 > rockPos.Y1)) {
+        return true;
+    }
+};
+var Heart = function(factorX, factorY) {
+
+};
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
@@ -144,27 +187,58 @@ Player.prototype.render = function() {
 
 
 Player.prototype.handleInput = function(keyPressed) {
-
+    var rockPresence = false;
+    var myPos = this.getExtremePoints();
     switch (keyPressed) {
         case 'enter':
             playing.pause = !playing.pause;
             break;
+            // to move
+            //check if there is a rock before moving
         case 'left':
             if (this.x > 0) {
-                this.x = this.x - this.incrementX;
+                myPos.X1 = myPos.X1 - this.incrementX;
+                myPos.X2 = myPos.X2 - this.incrementX;
+                allRocks.forEach(function(rock) {
+                    rockPresence = rockPresence || rock.checkRockPos(myPos);
+                });
+                if (!rockPresence) {
+                    this.x = this.x - this.incrementX;
+                }
             }
             break;
         case 'up':
-            this.y = this.y - this.incrementY;
+            myPos.Y1 = myPos.Y1 - this.incrementY;
+            myPos.Y2 = myPos.Y2 - this.incrementY;
+            allRocks.forEach(function(rock) {
+                rockPresence = rockPresence || rock.checkRockPos(myPos);
+            });
+            if (!rockPresence) {
+                this.y = this.y - this.incrementY;
+            }
             break;
         case 'right':
             if (this.x < 404) {
-                this.x = this.x + this.incrementX;
+                myPos.X1 = myPos.X1 + this.incrementX;
+                myPos.X2 = myPos.X2 + this.incrementX;
+                allRocks.forEach(function(rock) {
+                    rockPresence = rockPresence || rock.checkRockPos(myPos);
+                });
+                if (!rockPresence) {
+                    this.x = this.x + this.incrementX;
+                }
             }
             break;
         case 'down':
             if (this.y < 385) {
-                this.y = this.y + this.incrementY;
+                myPos.Y1 = myPos.Y1 + this.incrementY;
+                myPos.Y2 = myPos.Y2 + this.incrementY;
+                allRocks.forEach(function(rock) {
+                    rockPresence = rockPresence || rock.checkRockPos(myPos);
+                });
+                if (!rockPresence) {
+                    this.y = this.y + this.incrementY;
+                }
             }
             break;
     }
@@ -174,6 +248,8 @@ Player.prototype.handleInput = function(keyPressed) {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 allEnemies = [new Enemy()];
+allRocks = [];
+allHearts = [];
 player = new Player();
 
 // This listens for key presses and sends the keys to your
@@ -193,3 +269,12 @@ document.addEventListener('keyup', function(e) {
         player.handleInput(allowedKeys[e.keyCode]);
     }
 });
+
+function GeneratePos(X1, X2, Y1, Y2) {
+    return {
+        X1: X1,
+        X2: X2,
+        Y1: Y1,
+        Y2: Y2
+    };
+}
