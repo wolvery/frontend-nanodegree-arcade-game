@@ -21,16 +21,20 @@ Game.prototype.selectorRender = function() {
 };
 Game.prototype.update = function() {
     this.level += 1;
-
+    if (this.level > 0) {
+        if (allEnemies.length < 6) {
+            allEnemies.push(new Enemy());
+        }
+    }
     //change enviroment to this level
 };
 Game.prototype.selection = function(keyPressed) {
     switch (keyPressed) {
         case 'enter':
-        //the sprite has been selected
-        this.playerSprite = players[Math.floor(this.selectorX /101)];
-        player.sprite= this.playerSprite;
-        this.update();
+            //the sprite has been selected
+            this.playerSprite = players[Math.floor(this.selectorX / 101)];
+            player.sprite = this.playerSprite;
+            this.update();
             break;
         case 'left':
             if (this.selectorX > 0) {
@@ -70,7 +74,7 @@ Element.prototype.getExtremePoints = function() {
 var Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-    this.speed = Math.floor(Math.random() * 2) + 1;
+    this.speed = Math.floor(Math.random() * playing.level) + 1;
     var factor = Math.floor(Math.random() * 3);
     Element.call(this, 0, factor + 0.5, 'images/enemy-bug.png');
     // The image/sprite for our enemies, this uses

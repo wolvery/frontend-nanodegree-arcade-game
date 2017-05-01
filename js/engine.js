@@ -125,7 +125,7 @@ var Engine = (function(global) {
         ctx.font = '42pt Arial';
         ctx.strokeStyle = 'green';
         ctx.lineWidth = 2;
-        ctx.strokeText("Select your player!", 0, 575);
+        ctx.strokeText("Select your player!", 0, 570);
         /* Loop through the players and draw them
          */
         for (col = 0; col < players.length; col++) {
@@ -151,6 +151,7 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
     function render() {
+
 
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
@@ -185,6 +186,11 @@ var Engine = (function(global) {
         }
 
         renderEntities();
+
+        ctx.font = '42pt Arial';
+        ctx.strokeStyle = 'yellow';
+        ctx.lineWidth = 2;
+        ctx.strokeText("Level:" + playing.level, 290, 570);
     }
     /* This function is called by the render function and is called on each game
      * tick. Its purpose is to then call the render functions you have defined
