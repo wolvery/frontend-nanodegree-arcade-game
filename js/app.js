@@ -26,6 +26,7 @@ Game.prototype.selectorRender = function() {
 Game.prototype.update = function() {
     this.level += 1;
     if (this.level > 0) {
+        this.pause = false;
         if (allEnemies.length < 6) {
             allEnemies.push(new Enemy());
         }

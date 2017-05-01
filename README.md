@@ -1,6 +1,18 @@
 frontend-nanodegree-arcade-game
 ===============================
+# Froggroachers game
+Be ready to play the most amazing game ever made! Well, we did try to provide an amazing experience.
+Avoid the froggroaches and reach the ocean to go to the next level!
+## HOW TO
+Looking for playing? Well, just click [here](https://wolvery.github.io/frontend-nanodegree-arcade-game/).
+Use
+	- **ARROWS:** to move around.
+	- **ENTER:** to pause/unpause and select the player.
+## Contribution
+We already have a roadmap of new features:
+1. Include lives system to our game.
+2. Generate random hearts in our game.
+3. Include a special system that the player break rock and enemies.
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
+Feel free to contribute to this game!
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
