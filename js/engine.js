@@ -46,7 +46,11 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
         update(dt);
-        render();
+        if (playing.level === 0) {
+            renderSelection();
+        } else {
+            render();
+        }
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -79,10 +83,28 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt);
-        // checkCollisions();
+        if (!playing.pause) {
+            updateEntities(dt);
+            checkCollisions();
+        }
     }
+    //check if player is inside our region
+    //first  x and after y, Pairs are (X1,Y1),(X2,Y2)
+    //ENEMY
+    //X1,Y1---X2,Y1
+    //X1,Y2---X2,Y2
+    function checkCollisions() {
+        allEnemies.forEach(function(enemy) {
+            var enemyPos = enemy.getExtremePoints();
+            var playerPos = player.getExtremePoints();
 
+            if ((playerPos.X1 < enemyPos.X2) && (playerPos.X2 > enemyPos.X1) &&
+                (playerPos.Y1 < enemyPos.Y2) && (playerPos.Y2 > enemyPos.Y1)) {
+                console.log(playerPos, enemyPos);
+                player.reset();
+            }
+        });
+    }
     /* This is called by the update function and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
@@ -97,6 +119,31 @@ var Engine = (function(global) {
         player.update();
     }
 
+    /* This function initially draws the selection of player to be used in the game.
+     */
+    function renderSelection() {
+        ctx.font = '42pt Arial';
+        ctx.strokeStyle = 'green';
+        ctx.lineWidth = 2;
+        ctx.strokeText("Select your player!", 0, 575);
+        /* Loop through the players and draw them
+         */
+        for (col = 0; col < players.length; col++) {
+            ctx.drawImage(Resources.get('images/Selector.png'), col * 101, 4 * 83);
+            ctx.drawImage(Resources.get(players[col]), col * 101, 3 * 83);
+        }
+        //time to render the selector.
+        renderSelectionDraw();
+    }
+
+
+    /* This function is called by the render Selection function and is called once per game.
+     * Its purpose is to select the player you are going to play.
+     */
+    function renderSelectionDraw() {
+        playing.selectorRender();
+    }
+
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
@@ -104,22 +151,23 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
     function render() {
+
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
         var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
+                'images/water-block.png', // Top row is water
+                'images/stone-block.png', // Row 1 of 3 of stone
+                'images/stone-block.png', // Row 2 of 3 of stone
+                'images/stone-block.png', // Row 3 of 3 of stone
+                'images/grass-block.png', // Row 1 of 2 of grass
+                'images/grass-block.png' // Row 2 of 2 of grass
             ],
             numRows = 6,
             numCols = 5,
             row, col;
 
-        /* Loop through the number of rows and columns we've defined above
+        /*Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
          */
@@ -138,7 +186,6 @@ var Engine = (function(global) {
 
         renderEntities();
     }
-
     /* This function is called by the render function and is called on each game
      * tick. Its purpose is to then call the render functions you have defined
      * on your enemy and player entities within app.js
@@ -171,7 +218,12 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
+        'images/Selector.png'
     ]);
     Resources.onReady(init);
 
